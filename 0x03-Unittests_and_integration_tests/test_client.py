@@ -32,7 +32,8 @@ class TestGithubOrgClient(TestCase):
         repos_url key:value pair"""
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock) as mock_url_repos:
-            mock_url_repos.return_value = 'https://api.github.com/orgs/google/repos'
+            REPOURL = 'https://api.github.com/orgs/google/repos'
+            mock_url_repos.return_value = REPOURL
             GithubObject = GithubOrgClient(org_name='google')
             self.assertEqual(GithubObject._public_repos_url,
                              'https://api.github.com/orgs/google/repos')
@@ -74,7 +75,8 @@ class TestGithubOrgClient(TestCase):
         mock_get_json.return_value = test_PAYLOAD.get('repos')
         with patch('client.GithubOrgClient._public_repos_url',
                    new_callable=PropertyMock,
-                   return_value=test_PAYLOAD.get('repos_url')) as mock_public_repos_url:
+                   return_value=test_PAYLOAD['repos_url']) as \
+                mock_public_repos_url:
             self.assertEqual(GithubOrgClient('google').public_repos(),
                              ['episodes.dart', 'cpp-netlib'], )
             mock_get_json.assert_called_once()
@@ -90,7 +92,8 @@ class TestGithubOrgClient(TestCase):
         self.assertEqual(GithubObject, expected)
 
 
-@parameterized_class(("org_payload", "repos_payload", "expected_repos", "apache2_repos"),
+@parameterized_class(("org_payload", "repos_payload",
+                      "expected_repos", "apache2_repos"),
                      TEST_PAYLOAD)
 class TestIntegrationGithubOrgClient(TestCase):
     """Test Suite containing Unit Tests for methods on
@@ -117,6 +120,13 @@ class TestIntegrationGithubOrgClient(TestCase):
         self.assertEqual(GithubObj.public_repos(), self.expected_repos)
         self.assertEqual(GithubObj.public_repos("NOLICENSE"), [])
         self.mock.assert_called()
+
+    def test_public_repos_with_license(self):
+        """This unit case implements a unit case for public_repos
+        with an argument of license=apache-2.0"""
+        GithubObj = GithubOrgClient('google')
+        self.assertEqual(GithubObj.public_repos(license='apache-2.0'),
+                         self.apache2_repos, )
 
     @classmethod
     def tearDownClass(cls):
