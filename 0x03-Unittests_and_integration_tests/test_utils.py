@@ -54,10 +54,10 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self):
         class TestClass:
-            """Test Class"""
+            """Created a Test Class for various methods"""
 
             def a_method(self):
-                """Returns 42"""
+                """This function always Returns 42"""
                 return 42
 
             @memoize
