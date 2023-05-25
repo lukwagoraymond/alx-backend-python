@@ -5,7 +5,7 @@ import json
 from unittest import TestCase
 from client import GithubOrgClient
 from parameterized import parameterized, parameterized_class
-from unittest.mock import Mock, patch, PropertyMock
+from unittest.mock import Mock, patch, PropertyMock, call
 from typing import Dict
 from fixtures import TEST_PAYLOAD
 
@@ -100,7 +100,7 @@ class TestIntegrationGithubOrgClient(TestCase):
     public_repos and has_license"""
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         """Before all tests in class starts to executed"""
         configuratn = {'return_value.json.side_effect': [
             cls.org_payload, cls.repos_payload,
@@ -110,7 +110,7 @@ class TestIntegrationGithubOrgClient(TestCase):
 
         cls.mock = cls.get_patcher.start()
 
-    def test_public_repos(self):
+    def test_public_repos(self) -> None:
         """Test the entire accuracy of the entire
         public_repos method"""
         GithubObj = GithubOrgClient('google')
@@ -121,7 +121,7 @@ class TestIntegrationGithubOrgClient(TestCase):
         self.assertEqual(GithubObj.public_repos("NOLICENSE"), [])
         self.mock.assert_called()
 
-    def test_public_repos_with_license(self):
+    def test_public_repos_with_license(self) -> None:
         """This unit case implements a unit case for public_repos
         with an argument of license=apache-2.0"""
         GithubObj = GithubOrgClient('google')
@@ -129,6 +129,6 @@ class TestIntegrationGithubOrgClient(TestCase):
                          self.apache2_repos, )
 
     @classmethod
-    def tearDownClass(cls):
+    def tearDownClass(cls) -> None:
         """After tests in entire class executed"""
         cls.get_patcher.stop()
