@@ -53,6 +53,8 @@ class TestMemoize(unittest.TestCase):
     """Test Suite containing memoize method Test Cases"""
 
     def test_memoize(self):
+        """This is a Unit Case to test accuracy of the
+        a_method under TestClass below"""
         class TestClass:
             """Created a Test Class for various methods"""
 
